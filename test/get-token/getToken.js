@@ -8,8 +8,8 @@ const {
 const AWS = require("aws-sdk");
 
 const POOL_DATA = {
-  UserPoolId: "eu-west-1_WftRtPBs5",
-  ClientId: "6o1jkqd70ubdmeugl5ivm9ltuh",
+  UserPoolId: "eu-west-1_YmqI44Qj4",
+  ClientId: "5etp2ee2aqe0utmsoqj3qaeg91",
   // IdentityPoolID: 'eu-west-1:37caf79b-917c-401e-b13a-25c663a7108e',
   // YOUR_USER_POOL_ID_IDP: 'cognito-idp.eu-west-1.amazonaws.com/eu-west-1_1NLLUq3Th'
 };
@@ -57,31 +57,6 @@ function call(username) {
         if (_err) {
           console.log("error", _err);
         }
-
-        fetch(
-          "https://4cw2c4lng9.execute-api.eu-west-1.amazonaws.com/prod/orgs",
-          {
-            method: "POST",
-            // headers: {
-            //   Authorization: "Bearer" + session.getIdToken().getJwtToken(),
-            // },
-            body: {
-              category_id: "1",
-              title: "org1",
-              location: "loc1",
-              key_words: "keyword1keyword2",
-              description: "desc1",
-              image: "base6444444",
-              contact_email: "test@gmail.com",
-              contact_phone: "76666",
-              organization_id: "org1",
-            },
-          }
-        )
-          .then((res) => res.json())
-          .then(console.log)
-          .catch(console.log);
-
         console.log(session.getIdToken().getJwtToken());
       });
     } else {

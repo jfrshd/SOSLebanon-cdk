@@ -272,7 +272,9 @@ export class SoslebanonStack extends cdk.Stack {
 
     helpApiResource.addMethod(
       "GET",
-      defaults.lambdaIntegration(getTypePosts, {}),
+      defaults.lambdaIntegration(getTypePosts, {
+        "application/json": '{\n"sub": "$context.authorizer.claims.sub"\n}',
+      }),
       {
         ...defaults.options,
         authorizationType: apigw.AuthorizationType.COGNITO,
@@ -300,7 +302,7 @@ export class SoslebanonStack extends cdk.Stack {
       "POST",
       defaults.lambdaIntegration(createPost, {
         "application/json":
-          '{"requestBody": $input.body, "organization_id": "$context.authorizer.claims.sub"}',
+          '{\n"requestBody": $input.body,\n"sub": "$context.authorizer.claims.sub"\n}',
       }),
       {
         ...defaults.options,
@@ -323,11 +325,19 @@ export class SoslebanonStack extends cdk.Stack {
       },
     });
 
-    this.postsTable.grantReadData(getTypePosts);
+    this.postsTable.grantWriteData(getTypePosts);
 
     helpApiResource.addMethod(
       "DELETE",
-      defaults.lambdaIntegration(getTypePosts, {}),
+      defaults.lambdaIntegration(getTypePosts, {
+        "application/json": `
+            #set($hasId = $input.params('id'))
+            {
+              "sub": "$context.authorizer.claims.sub"
+              #if($hasId != ""), "id" : "$input.params('id')"#end
+            }
+          `,
+      }),
       {
         ...defaults.options,
         authorizationType: apigw.AuthorizationType.COGNITO,
@@ -353,7 +363,16 @@ export class SoslebanonStack extends cdk.Stack {
 
     helpApiResource.addMethod(
       "GET",
-      defaults.lambdaIntegration(getTypePosts, {}),
+      defaults.lambdaIntegration(getTypePosts, {
+        "application/json": `
+          #set($hasLastEvaluatedKey = $input.params('lastEvaluatedKey'))
+          #set($hasLimit = $input.params('limit'))
+          {
+            #if($hasLimit != "") "limit" : "$input.params('limit')"#end
+            #if($hasLastEvaluatedKey != ""),"lastEvaluatedKey": "$input.params('lastEvaluatedKey')"#end
+          }
+        `,
+      }),
       defaults.options
     );
   }
@@ -375,7 +394,18 @@ export class SoslebanonStack extends cdk.Stack {
 
     helpApiResource.addMethod(
       "GET",
-      defaults.lambdaIntegration(getTypePosts, {}),
+      defaults.lambdaIntegration(getTypePosts, {
+        "application/json": `
+        #set($hasTypeId = $input.params('typeId'))
+        #set($hasLastEvaluatedKey = $input.params('lastEvaluatedKey'))
+        #set($hasLimit = $input.params('limit'))
+        {
+          #if($hasTypeId != "") "typeId" : "$input.params('typeId')"#end
+          #if($hasLimit != ""),"limit" : "$input.params('limit')"#end
+          #if($hasLastEvaluatedKey != ""),"lastEvaluatedKey": "$input.params('lastEvaluatedKey')"#end
+        }
+      `,
+      }),
       defaults.options
     );
   }
