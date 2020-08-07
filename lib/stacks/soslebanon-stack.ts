@@ -55,9 +55,9 @@ export class SoslebanonStack extends cdk.Stack {
       },
     });
     this.postsTable.addLocalSecondaryIndex({
-      indexName: "type",
+      indexName: "typeId",
       sortKey: {
-        name: "type",
+        name: "typeId",
         type: dynamodb.AttributeType.STRING,
       },
     });
