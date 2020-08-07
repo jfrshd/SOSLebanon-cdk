@@ -15,6 +15,7 @@ import { IFunction } from "@aws-cdk/aws-lambda";
 export class SoslebanonStack extends cdk.Stack {
   api: apigw.RestApi;
   postsTable: dynamodb.Table;
+  typesTable: dynamodb.Table;
   authorizer: apigw.CfnAuthorizer;
 
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -26,7 +27,7 @@ export class SoslebanonStack extends cdk.Stack {
 
     this.createPostsTable();
 
-    const typesTable = new dynamodb.Table(this, "types-table", {
+    this.typesTable = new dynamodb.Table(this, "types-table", {
       tableName: "types-table",
       partitionKey: { name: "pk", type: dynamodb.AttributeType.STRING },
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
@@ -225,37 +226,59 @@ export class SoslebanonStack extends cdk.Stack {
   }
   ////////////////////////////////////////////
   createAPIResources() {
-    const helpApiResource = this.api.root.addResource("help");
-    helpApiResource.addMethod(
+    const adminApiResource = this.api.root.addResource("admin");
+    adminApiResource.addMethod(
       "OPTIONS",
       defaults.mockIntegration,
       defaults.options
     );
 
-    this.getAdminPostsFunction(helpApiResource); // GET
-    this.createPostsFunction(helpApiResource); // POST
-    this.deletePostFunction(helpApiResource); // DELETE
+    this.getAdminPostsFunction(adminApiResource); // GET
+    this.createPostsFunction(adminApiResource); // POST
+    this.deletePostFunction(adminApiResource); // DELETE
 
-    const latestHelpApiResource = this.api.root.addResource("latest-help");
-    latestHelpApiResource.addMethod(
+    ///////////////////////////////////////////////////////////////////////////////////
+    const postApiResource = this.api.root.addResource("post");
+    postApiResource.addMethod(
       "OPTIONS",
       defaults.mockIntegration,
       defaults.options
     );
 
-    this.getLatestPostsFunction(latestHelpApiResource); // GET
+    this.getPostFunction(postApiResource); // GET
 
-    const typeHelpApiResource = this.api.root.addResource("type-help");
-    typeHelpApiResource.addMethod(
+    ///////////////////////////////////////////////////////////////////////////////////
+    const typeApiResource = this.api.root.addResource("type");
+    typeApiResource.addMethod(
       "OPTIONS",
       defaults.mockIntegration,
       defaults.options
     );
 
-    this.getTypePostsFunction(typeHelpApiResource); // GET
+    this.getTypesFunction(typeApiResource); // GET
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    const latestPostsApiResource = this.api.root.addResource("latest-post");
+    latestPostsApiResource.addMethod(
+      "OPTIONS",
+      defaults.mockIntegration,
+      defaults.options
+    );
+
+    this.getLatestPostsFunction(latestPostsApiResource); // GET
+
+    ///////////////////////////////////////////////////////////////////////////////////
+    const typePostApiResource = this.api.root.addResource("type-post");
+    typePostApiResource.addMethod(
+      "OPTIONS",
+      defaults.mockIntegration,
+      defaults.options
+    );
+
+    this.getTypePostsFunction(typePostApiResource); // GET
   }
 
-  getAdminPostsFunction(helpApiResource: apigw.Resource) {
+  getAdminPostsFunction(adminApiResource: apigw.Resource) {
     const getTypePosts = new lambda.Function(this, "get-admin-posts", {
       functionName: "get-admin-posts",
       runtime: lambda.Runtime.NODEJS_12_X,
@@ -270,7 +293,7 @@ export class SoslebanonStack extends cdk.Stack {
 
     this.postsTable.grantReadData(getTypePosts);
 
-    helpApiResource.addMethod(
+    adminApiResource.addMethod(
       "GET",
       defaults.lambdaIntegration(getTypePosts, {
         "application/json": '{\n"sub": "$context.authorizer.claims.sub"\n}',
@@ -283,7 +306,7 @@ export class SoslebanonStack extends cdk.Stack {
     );
   }
 
-  createPostsFunction(helpApiResource: apigw.Resource) {
+  createPostsFunction(adminApiResource: apigw.Resource) {
     const createPost = new lambda.Function(this, "create-post", {
       functionName: "create-post",
       runtime: lambda.Runtime.NODEJS_12_X,
@@ -298,7 +321,7 @@ export class SoslebanonStack extends cdk.Stack {
 
     this.postsTable.grantReadWriteData(createPost);
 
-    helpApiResource.addMethod(
+    adminApiResource.addMethod(
       "POST",
       defaults.lambdaIntegration(createPost, {
         "application/json":
@@ -312,7 +335,7 @@ export class SoslebanonStack extends cdk.Stack {
     );
   }
 
-  deletePostFunction(helpApiResource: apigw.Resource) {
+  deletePostFunction(adminApiResource: apigw.Resource) {
     const getTypePosts = new lambda.Function(this, "delete-post", {
       functionName: "delete-post",
       runtime: lambda.Runtime.NODEJS_12_X,
@@ -327,7 +350,7 @@ export class SoslebanonStack extends cdk.Stack {
 
     this.postsTable.grantWriteData(getTypePosts);
 
-    helpApiResource.addMethod(
+    adminApiResource.addMethod(
       "DELETE",
       defaults.lambdaIntegration(getTypePosts, {
         "application/json": `
@@ -346,7 +369,7 @@ export class SoslebanonStack extends cdk.Stack {
     );
   }
 
-  getLatestPostsFunction(helpApiResource: apigw.Resource) {
+  getLatestPostsFunction(latestPostsApiResource: apigw.Resource) {
     const getTypePosts = new lambda.Function(this, "get-latest-posts", {
       functionName: "get-latest-posts",
       runtime: lambda.Runtime.NODEJS_12_X,
@@ -361,7 +384,7 @@ export class SoslebanonStack extends cdk.Stack {
 
     this.postsTable.grantReadData(getTypePosts);
 
-    helpApiResource.addMethod(
+    latestPostsApiResource.addMethod(
       "GET",
       defaults.lambdaIntegration(getTypePosts, {
         "application/json": `
@@ -377,7 +400,54 @@ export class SoslebanonStack extends cdk.Stack {
     );
   }
 
-  getTypePostsFunction(helpApiResource: apigw.Resource) {
+  getPostFunction(postApiResource: apigw.Resource) {
+    const getPost = new lambda.Function(this, "get-post", {
+      functionName: "get-post",
+      runtime: lambda.Runtime.NODEJS_12_X,
+      handler: "index.handler",
+      code: lambda.Code.fromAsset(path.join(__dirname, "../lambdas/get-post")),
+      environment: {
+        POSTS_TABLE: this.postsTable.tableName,
+      },
+    });
+
+    this.postsTable.grantReadData(getPost);
+
+    postApiResource.addMethod(
+      "GET",
+      defaults.lambdaIntegration(getPost, {
+        "application/json": `
+          #set($hasId = $input.params('id'))
+          {
+            #if($hasId != "") "id" : "$input.params('id')"#end
+          }
+        `,
+      }),
+      defaults.options
+    );
+  }
+
+  getTypesFunction(typeApiResource: apigw.Resource) {
+    const getTypes = new lambda.Function(this, "get-types", {
+      functionName: "get-types",
+      runtime: lambda.Runtime.NODEJS_12_X,
+      handler: "index.handler",
+      code: lambda.Code.fromAsset(path.join(__dirname, "../lambdas/get-types")),
+      environment: {
+        TYPES_TABLE: this.typesTable.tableName,
+      },
+    });
+
+    this.typesTable.grantReadData(getTypes);
+
+    typeApiResource.addMethod(
+      "GET",
+      defaults.lambdaIntegration(getTypes, {}),
+      defaults.options
+    );
+  }
+
+  getTypePostsFunction(postApiResource: apigw.Resource) {
     const getTypePosts = new lambda.Function(this, "get-type-posts", {
       functionName: "get-type-posts",
       runtime: lambda.Runtime.NODEJS_12_X,
@@ -392,7 +462,7 @@ export class SoslebanonStack extends cdk.Stack {
 
     this.postsTable.grantReadData(getTypePosts);
 
-    helpApiResource.addMethod(
+    postApiResource.addMethod(
       "GET",
       defaults.lambdaIntegration(getTypePosts, {
         "application/json": `

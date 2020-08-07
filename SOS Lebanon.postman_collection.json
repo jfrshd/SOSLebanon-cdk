@@ -1,0 +1,354 @@
+{
+	"info": {
+		"_postman_id": "32ed820f-0544-45e1-b9a7-0913d2c86919",
+		"name": "SOS Lebanon",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "get-admin-posts",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJraWQiOiI2U0MxMnB2ajVzSlRKV01maHllOXN0N3pXbXdERG9OdWI2bmZLZG80ZTk4PSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJmZTljNzFhMi04ZjI5LTQwNDEtOWI4NC00YzA1ZTEzNGFiOTkiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLmV1LXdlc3QtMS5hbWF6b25hd3MuY29tXC9ldS13ZXN0LTFfWW1xSTQ0UWo0IiwicGhvbmVfbnVtYmVyX3ZlcmlmaWVkIjp0cnVlLCJjb2duaXRvOnVzZXJuYW1lIjoiZmU5YzcxYTItOGYyOS00MDQxLTliODQtNGMwNWUxMzRhYjk5IiwiYXVkIjoiNWV0cDJlZTJhcWUwdXRtc29xajNxYWVnOTEiLCJldmVudF9pZCI6IjFiYmI2MDNkLWQzMDMtNDEyYy05MDAxLWU5NmVkMzgxOWZkNSIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNTk2ODEzMjg4LCJwaG9uZV9udW1iZXIiOiIrOTYxNzY1ODQ5MzQiLCJleHAiOjE1OTY4MTY4ODgsImlhdCI6MTU5NjgxMzI4OCwiZW1haWwiOiJqZnJzaGQ5NEBnbWFpbC5jb20ifQ.NT9rDM044rnKL7m5rRVKv34gGcRdXspAv_fZCb3HGFAFYRqGNCUKvMb9Byp_6Qbv42GhzNMzatitH8njLiwTI8NuIwKtwOlkxf903egndnM4U9-CdQL5rJeLoZifogXze2L4ko6MuLy7w3ST4JozCC-PtdngaQrfzI9GtolkFAF7tgNy-BrhMGQS3q81NuJ7LviGLpiAmt1e__jE6wxFAElSR-L97k3S8nQP0OOBpbsWYwi0YBXGd4wLEFeyrOaelTwwMku5ObQl4xRRUWQbqvSjFGoj9bX66tgj6xUnAeVa8wgJvmV-D60742ye8QuTvK5rEtDTpVJfcVawL--5ZQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://dcijvdcvue.execute-api.eu-west-1.amazonaws.com/prod/admin",
+					"protocol": "https",
+					"host": [
+						"dcijvdcvue",
+						"execute-api",
+						"eu-west-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"prod",
+						"admin"
+					],
+					"query": [
+						{
+							"key": "LastEvaluatedKey",
+							"value": "null",
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create-post",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJraWQiOiI2U0MxMnB2ajVzSlRKV01maHllOXN0N3pXbXdERG9OdWI2bmZLZG80ZTk4PSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJmZTljNzFhMi04ZjI5LTQwNDEtOWI4NC00YzA1ZTEzNGFiOTkiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLmV1LXdlc3QtMS5hbWF6b25hd3MuY29tXC9ldS13ZXN0LTFfWW1xSTQ0UWo0IiwicGhvbmVfbnVtYmVyX3ZlcmlmaWVkIjp0cnVlLCJjb2duaXRvOnVzZXJuYW1lIjoiZmU5YzcxYTItOGYyOS00MDQxLTliODQtNGMwNWUxMzRhYjk5IiwiYXVkIjoiNWV0cDJlZTJhcWUwdXRtc29xajNxYWVnOTEiLCJldmVudF9pZCI6IjFiYmI2MDNkLWQzMDMtNDEyYy05MDAxLWU5NmVkMzgxOWZkNSIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNTk2ODEzMjg4LCJwaG9uZV9udW1iZXIiOiIrOTYxNzY1ODQ5MzQiLCJleHAiOjE1OTY4MTY4ODgsImlhdCI6MTU5NjgxMzI4OCwiZW1haWwiOiJqZnJzaGQ5NEBnbWFpbC5jb20ifQ.NT9rDM044rnKL7m5rRVKv34gGcRdXspAv_fZCb3HGFAFYRqGNCUKvMb9Byp_6Qbv42GhzNMzatitH8njLiwTI8NuIwKtwOlkxf903egndnM4U9-CdQL5rJeLoZifogXze2L4ko6MuLy7w3ST4JozCC-PtdngaQrfzI9GtolkFAF7tgNy-BrhMGQS3q81NuJ7LviGLpiAmt1e__jE6wxFAElSR-L97k3S8nQP0OOBpbsWYwi0YBXGd4wLEFeyrOaelTwwMku5ObQl4xRRUWQbqvSjFGoj9bX66tgj6xUnAeVa8wgJvmV-D60742ye8QuTvK5rEtDTpVJfcVawL--5ZQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"typeId\": \"type1\",\n    \"image\": \"\",\n    \"title\": \"title test \",\n    \"description\": \"description\",\n    \"location\": \"beirut dt\",\n    \"phoneNumber\": \"12254568\",\n    \"fulfilled\": false,\n    \"key_words\": [\n    \"keyword1\",\n    \"keyword2\"\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://dcijvdcvue.execute-api.eu-west-1.amazonaws.com/prod/admin",
+					"protocol": "https",
+					"host": [
+						"dcijvdcvue",
+						"execute-api",
+						"eu-west-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"prod",
+						"admin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update-post",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJraWQiOiI2U0MxMnB2ajVzSlRKV01maHllOXN0N3pXbXdERG9OdWI2bmZLZG80ZTk4PSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJmZTljNzFhMi04ZjI5LTQwNDEtOWI4NC00YzA1ZTEzNGFiOTkiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLmV1LXdlc3QtMS5hbWF6b25hd3MuY29tXC9ldS13ZXN0LTFfWW1xSTQ0UWo0IiwicGhvbmVfbnVtYmVyX3ZlcmlmaWVkIjp0cnVlLCJjb2duaXRvOnVzZXJuYW1lIjoiZmU5YzcxYTItOGYyOS00MDQxLTliODQtNGMwNWUxMzRhYjk5IiwiYXVkIjoiNWV0cDJlZTJhcWUwdXRtc29xajNxYWVnOTEiLCJldmVudF9pZCI6IjFiYmI2MDNkLWQzMDMtNDEyYy05MDAxLWU5NmVkMzgxOWZkNSIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNTk2ODEzMjg4LCJwaG9uZV9udW1iZXIiOiIrOTYxNzY1ODQ5MzQiLCJleHAiOjE1OTY4MTY4ODgsImlhdCI6MTU5NjgxMzI4OCwiZW1haWwiOiJqZnJzaGQ5NEBnbWFpbC5jb20ifQ.NT9rDM044rnKL7m5rRVKv34gGcRdXspAv_fZCb3HGFAFYRqGNCUKvMb9Byp_6Qbv42GhzNMzatitH8njLiwTI8NuIwKtwOlkxf903egndnM4U9-CdQL5rJeLoZifogXze2L4ko6MuLy7w3ST4JozCC-PtdngaQrfzI9GtolkFAF7tgNy-BrhMGQS3q81NuJ7LviGLpiAmt1e__jE6wxFAElSR-L97k3S8nQP0OOBpbsWYwi0YBXGd4wLEFeyrOaelTwwMku5ObQl4xRRUWQbqvSjFGoj9bX66tgj6xUnAeVa8wgJvmV-D60742ye8QuTvK5rEtDTpVJfcVawL--5ZQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"fe9c71a2-8f29-4041-9b84-4c05e134ab99#97n1szLfAYQqtvnhjEc6pj\",\n    \"typeId\": \"type1\",\n    \"image\": \"\",\n    \"title\": \"title test \",\n    \"description\": \"description new\",\n    \"location\": \"beirut dt\",\n    \"phoneNumber\": \"12254568\",\n    \"fulfilled\": false,\n    \"key_words\": [\n    \"keyword1\",\n    \"keyword2\"\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://dcijvdcvue.execute-api.eu-west-1.amazonaws.com/prod/admin",
+					"protocol": "https",
+					"host": [
+						"dcijvdcvue",
+						"execute-api",
+						"eu-west-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"prod",
+						"admin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete-post",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJraWQiOiI2U0MxMnB2ajVzSlRKV01maHllOXN0N3pXbXdERG9OdWI2bmZLZG80ZTk4PSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJmZTljNzFhMi04ZjI5LTQwNDEtOWI4NC00YzA1ZTEzNGFiOTkiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLmV1LXdlc3QtMS5hbWF6b25hd3MuY29tXC9ldS13ZXN0LTFfWW1xSTQ0UWo0IiwicGhvbmVfbnVtYmVyX3ZlcmlmaWVkIjp0cnVlLCJjb2duaXRvOnVzZXJuYW1lIjoiZmU5YzcxYTItOGYyOS00MDQxLTliODQtNGMwNWUxMzRhYjk5IiwiYXVkIjoiNWV0cDJlZTJhcWUwdXRtc29xajNxYWVnOTEiLCJldmVudF9pZCI6IjFiYmI2MDNkLWQzMDMtNDEyYy05MDAxLWU5NmVkMzgxOWZkNSIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNTk2ODEzMjg4LCJwaG9uZV9udW1iZXIiOiIrOTYxNzY1ODQ5MzQiLCJleHAiOjE1OTY4MTY4ODgsImlhdCI6MTU5NjgxMzI4OCwiZW1haWwiOiJqZnJzaGQ5NEBnbWFpbC5jb20ifQ.NT9rDM044rnKL7m5rRVKv34gGcRdXspAv_fZCb3HGFAFYRqGNCUKvMb9Byp_6Qbv42GhzNMzatitH8njLiwTI8NuIwKtwOlkxf903egndnM4U9-CdQL5rJeLoZifogXze2L4ko6MuLy7w3ST4JozCC-PtdngaQrfzI9GtolkFAF7tgNy-BrhMGQS3q81NuJ7LviGLpiAmt1e__jE6wxFAElSR-L97k3S8nQP0OOBpbsWYwi0YBXGd4wLEFeyrOaelTwwMku5ObQl4xRRUWQbqvSjFGoj9bX66tgj6xUnAeVa8wgJvmV-D60742ye8QuTvK5rEtDTpVJfcVawL--5ZQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://dcijvdcvue.execute-api.eu-west-1.amazonaws.com/prod/admin?id=fe9c71a2-8f29-4041-9b84-4c05e134ab99%2397n1szLfAYQqtvnhjEc6pj",
+					"protocol": "https",
+					"host": [
+						"dcijvdcvue",
+						"execute-api",
+						"eu-west-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"prod",
+						"admin"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "fe9c71a2-8f29-4041-9b84-4c05e134ab99#97n1szLfAYQqtvnhjEc6pj"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-latest-posts",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://dcijvdcvue.execute-api.eu-west-1.amazonaws.com/prod/latest-post?LastEvaluatedKey&limit=2",
+					"protocol": "https",
+					"host": [
+						"dcijvdcvue",
+						"execute-api",
+						"eu-west-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"prod",
+						"latest-post"
+					],
+					"query": [
+						{
+							"key": "LastEvaluatedKey",
+							"value": null
+						},
+						{
+							"key": "limit",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-type-posts",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://dcijvdcvue.execute-api.eu-west-1.amazonaws.com/prod/type-help?typeId=type1",
+					"protocol": "https",
+					"host": [
+						"dcijvdcvue",
+						"execute-api",
+						"eu-west-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"prod",
+						"type-help"
+					],
+					"query": [
+						{
+							"key": "typeId",
+							"value": "type1"
+						},
+						{
+							"key": "LastEvaluatedKey",
+							"value": null,
+							"disabled": true
+						},
+						{
+							"key": "limit",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-post",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJraWQiOiI2U0MxMnB2ajVzSlRKV01maHllOXN0N3pXbXdERG9OdWI2bmZLZG80ZTk4PSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJmZTljNzFhMi04ZjI5LTQwNDEtOWI4NC00YzA1ZTEzNGFiOTkiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLmV1LXdlc3QtMS5hbWF6b25hd3MuY29tXC9ldS13ZXN0LTFfWW1xSTQ0UWo0IiwicGhvbmVfbnVtYmVyX3ZlcmlmaWVkIjp0cnVlLCJjb2duaXRvOnVzZXJuYW1lIjoiZmU5YzcxYTItOGYyOS00MDQxLTliODQtNGMwNWUxMzRhYjk5IiwiYXVkIjoiNWV0cDJlZTJhcWUwdXRtc29xajNxYWVnOTEiLCJldmVudF9pZCI6IjFiYmI2MDNkLWQzMDMtNDEyYy05MDAxLWU5NmVkMzgxOWZkNSIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNTk2ODEzMjg4LCJwaG9uZV9udW1iZXIiOiIrOTYxNzY1ODQ5MzQiLCJleHAiOjE1OTY4MTY4ODgsImlhdCI6MTU5NjgxMzI4OCwiZW1haWwiOiJqZnJzaGQ5NEBnbWFpbC5jb20ifQ.NT9rDM044rnKL7m5rRVKv34gGcRdXspAv_fZCb3HGFAFYRqGNCUKvMb9Byp_6Qbv42GhzNMzatitH8njLiwTI8NuIwKtwOlkxf903egndnM4U9-CdQL5rJeLoZifogXze2L4ko6MuLy7w3ST4JozCC-PtdngaQrfzI9GtolkFAF7tgNy-BrhMGQS3q81NuJ7LviGLpiAmt1e__jE6wxFAElSR-L97k3S8nQP0OOBpbsWYwi0YBXGd4wLEFeyrOaelTwwMku5ObQl4xRRUWQbqvSjFGoj9bX66tgj6xUnAeVa8wgJvmV-D60742ye8QuTvK5rEtDTpVJfcVawL--5ZQ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://dcijvdcvue.execute-api.eu-west-1.amazonaws.com/prod/post?id=fe9c71a2-8f29-4041-9b84-4c05e134ab99%23c5uTzorRkcwyhfM7PmvzkN",
+					"protocol": "https",
+					"host": [
+						"dcijvdcvue",
+						"execute-api",
+						"eu-west-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"prod",
+						"post"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "fe9c71a2-8f29-4041-9b84-4c05e134ab99#c5uTzorRkcwyhfM7PmvzkN"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-types",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://dcijvdcvue.execute-api.eu-west-1.amazonaws.com/prod/type",
+					"protocol": "https",
+					"host": [
+						"dcijvdcvue",
+						"execute-api",
+						"eu-west-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"prod",
+						"type"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

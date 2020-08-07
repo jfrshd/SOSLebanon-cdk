@@ -32,7 +32,7 @@ function signIn(username, password, fn) {
   cognitoUser.authenticateUser(authDetails, {
     onSuccess(result) {
       // console.log(result);
-      console.log("signIn succeed");
+      console.log("signIn succeeded");
       fn(username);
     },
     onFailure(err) {
