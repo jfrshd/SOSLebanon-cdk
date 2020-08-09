@@ -54,7 +54,7 @@ export class SoslebanonStack extends cdk.Stack {
     });
   }
 
-  createTypestable(): void{
+  createTypestable(): void {
     this.settingsTable = new dynamodb.Table(this, "setting-table", {
       tableName: "setting-table",
       partitionKey: { name: "pk", type: dynamodb.AttributeType.STRING },
@@ -260,6 +260,16 @@ export class SoslebanonStack extends cdk.Stack {
     this.getTypesFunction(typeApiResource); // GET
 
     ///////////////////////////////////////////////////////////////////////////////////
+    const locationApiResource = this.api.root.addResource("location");
+    locationApiResource.addMethod(
+      "OPTIONS",
+      defaults.mockIntegration,
+      defaults.options
+    );
+
+    this.getLocationsFunction(locationApiResource); // GET
+
+    ///////////////////////////////////////////////////////////////////////////////////
     const latestPostsApiResource = this.api.root.addResource("latest-post");
     latestPostsApiResource.addMethod(
       "OPTIONS",
@@ -382,12 +392,12 @@ export class SoslebanonStack extends cdk.Stack {
       ),
       environment: {
         POSTS_TABLE: this.postsTable.tableName,
-        identityPoolId: this.userPool.userPoolId
+        identityPoolId: this.userPool.userPoolId,
       },
     });
 
     this.postsTable.grantReadData(getTypePosts);
-  
+
     latestPostsApiResource.addMethod(
       "GET",
       defaults.lambdaIntegration(getTypePosts, {
@@ -451,6 +461,28 @@ export class SoslebanonStack extends cdk.Stack {
     typeApiResource.addMethod(
       "GET",
       defaults.lambdaIntegration(getTypes, {}),
+      defaults.options
+    );
+  }
+
+  getLocationsFunction(locationApiResource: apigw.Resource) {
+    const getLocations = new lambda.Function(this, "get-locations", {
+      functionName: "get-locations",
+      runtime: lambda.Runtime.NODEJS_12_X,
+      handler: "index.handler",
+      code: lambda.Code.fromAsset(
+        path.join(__dirname, "../lambdas/get-locations")
+      ),
+      environment: {
+        SETTINGS_TABLE: this.settingsTable.tableName,
+      },
+    });
+
+    this.settingsTable.grantReadData(getLocations);
+
+    locationApiResource.addMethod(
+      "GET",
+      defaults.lambdaIntegration(getLocations, {}),
       defaults.options
     );
   }
