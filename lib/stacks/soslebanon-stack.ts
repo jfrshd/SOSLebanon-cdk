@@ -318,6 +318,7 @@ export class SoslebanonStack extends cdk.Stack {
       ),
       environment: {
         POSTS_TABLE: this.postsTable.tableName,
+        USER_POOL_ID: this.userPool.userPoolId
       },
     });
 
