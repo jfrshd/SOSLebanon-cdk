@@ -15,24 +15,16 @@ import { IFunction } from "@aws-cdk/aws-lambda";
 export class SoslebanonStack extends cdk.Stack {
   api: apigw.RestApi;
   postsTable: dynamodb.Table;
-  typesTable: dynamodb.Table;
+  settingsTable: dynamodb.Table;
   authorizer: apigw.CfnAuthorizer;
+  userPool: cognito.UserPool;
 
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
-
     this.api = new apigw.RestApi(this, "SOSLebanonAPI");
-
     this.createCognito();
-
     this.createPostsTable();
-
-    this.typesTable = new dynamodb.Table(this, "types-table", {
-      tableName: "types-table",
-      partitionKey: { name: "pk", type: dynamodb.AttributeType.STRING },
-      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-    });
-
+    this.createTypestable();
     this.createAPIResources();
   }
 
@@ -45,8 +37,6 @@ export class SoslebanonStack extends cdk.Stack {
         type: dynamodb.AttributeType.STRING,
       },
       billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
-      // readCapacity: 5,
-      // writeCapacity: 5,
     });
     this.postsTable.addLocalSecondaryIndex({
       indexName: "creationDate",
@@ -64,12 +54,24 @@ export class SoslebanonStack extends cdk.Stack {
     });
   }
 
+  createTypestable(): void{
+    this.settingsTable = new dynamodb.Table(this, "setting-table", {
+      tableName: "setting-table",
+      partitionKey: { name: "pk", type: dynamodb.AttributeType.STRING },
+      sortKey: {
+        name: "id",
+        type: dynamodb.AttributeType.STRING,
+      },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+    });
+  }
+
   createCognito(): void {
     const confSet = new ses.CfnConfigurationSet(this, "soslebanon-conf-set", {
       name: "soslebanon-ses-conf-set",
     });
 
-    const userPool = new cognito.UserPool(this, "soslebanon-user-pool", {
+    this.userPool = new cognito.UserPool(this, "soslebanon-user-pool", {
       userPoolName: "soslebanon-user-pool",
       selfSignUpEnabled: true,
       signInAliases: {
@@ -106,7 +108,7 @@ export class SoslebanonStack extends cdk.Stack {
       accountRecovery: cognito.AccountRecovery.EMAIL_ONLY,
     });
 
-    const cfnUserPool = userPool.node.defaultChild as cognito.CfnUserPool;
+    const cfnUserPool = this.userPool.node.defaultChild as cognito.CfnUserPool;
     // cfnUserPool.emailConfiguration = {
     //   configurationSet: confSet.ref,
     //   emailSendingAccount: "DEVELOPER",
@@ -130,7 +132,7 @@ export class SoslebanonStack extends cdk.Stack {
       {
         userPoolClientName: "soslebanon-client",
         generateSecret: false,
-        userPool: userPool,
+        userPool: this.userPool,
       }
     );
     const identityPool = new cognito.CfnIdentityPool(
@@ -142,7 +144,7 @@ export class SoslebanonStack extends cdk.Stack {
         cognitoIdentityProviders: [
           {
             clientId: userPoolClient.userPoolClientId,
-            providerName: userPool.userPoolProviderName,
+            providerName: this.userPool.userPoolProviderName,
           },
         ],
       }
@@ -224,7 +226,7 @@ export class SoslebanonStack extends cdk.Stack {
       }
     );
   }
-  ////////////////////////////////////////////
+
   createAPIResources() {
     const adminApiResource = this.api.root.addResource("admin");
     adminApiResource.addMethod(
@@ -277,7 +279,7 @@ export class SoslebanonStack extends cdk.Stack {
 
     this.getTypePostsFunction(typePostApiResource); // GET
   }
-
+  // lambda functions
   getAdminPostsFunction(adminApiResource: apigw.Resource) {
     const getTypePosts = new lambda.Function(this, "get-admin-posts", {
       functionName: "get-admin-posts",
@@ -379,21 +381,26 @@ export class SoslebanonStack extends cdk.Stack {
       ),
       environment: {
         POSTS_TABLE: this.postsTable.tableName,
+        identityPoolId: this.userPool.userPoolId
       },
     });
 
     this.postsTable.grantReadData(getTypePosts);
-
+  
     latestPostsApiResource.addMethod(
       "GET",
       defaults.lambdaIntegration(getTypePosts, {
         "application/json": `
-          #set($hasLastEvaluatedKey = $input.params('lastEvaluatedKey'))
-          #set($hasLimit = $input.params('limit'))
-          {
-            #if($hasLimit != "") "limit" : "$input.params('limit')"#end
-            #if($hasLastEvaluatedKey != ""),"lastEvaluatedKey": "$input.params('lastEvaluatedKey')"#end
-          }
+        #set($hasLastEvaluatedKey = $input.params('LastEvaluatedKey'))
+        #set($hasLimit = $input.params('limit'))
+        #set($hasTypeId = $input.params('typeId'))
+        #set($hasKeyword = $input.params('keyword'))
+        {
+        #if($hasLimit != "") "limit" : "$input.params('limit')"#end
+        #if($hasTypeId != ""), "typeId" : "$input.params('typeId')"#end
+        #if($hasKeyword != ""), "keyword" : "$input.params('keyword')"#end
+        #if($hasLastEvaluatedKey != ""), "LastEvaluatedKey" : "$input.params('LastEvaluatedKey')"#end
+        }
         `,
       }),
       defaults.options
@@ -434,11 +441,11 @@ export class SoslebanonStack extends cdk.Stack {
       handler: "index.handler",
       code: lambda.Code.fromAsset(path.join(__dirname, "../lambdas/get-types")),
       environment: {
-        TYPES_TABLE: this.typesTable.tableName,
+        SETTINGS_TABLE: this.settingsTable.tableName,
       },
     });
 
-    this.typesTable.grantReadData(getTypes);
+    this.settingsTable.grantReadData(getTypes);
 
     typeApiResource.addMethod(
       "GET",
@@ -467,12 +474,12 @@ export class SoslebanonStack extends cdk.Stack {
       defaults.lambdaIntegration(getTypePosts, {
         "application/json": `
         #set($hasTypeId = $input.params('typeId'))
-        #set($hasLastEvaluatedKey = $input.params('lastEvaluatedKey'))
+        #set($hasLastEvaluatedKey = $input.params('LastEvaluatedKey'))
         #set($hasLimit = $input.params('limit'))
         {
           #if($hasTypeId != "") "typeId" : "$input.params('typeId')"#end
           #if($hasLimit != ""),"limit" : "$input.params('limit')"#end
-          #if($hasLastEvaluatedKey != ""),"lastEvaluatedKey": "$input.params('lastEvaluatedKey')"#end
+          #if($hasLastEvaluatedKey != ""),"LastEvaluatedKey": "$input.params('LastEvaluatedKey')"#end
         }
       `,
       }),
