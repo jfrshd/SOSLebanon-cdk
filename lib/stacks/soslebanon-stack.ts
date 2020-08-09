@@ -328,7 +328,6 @@ export class SoslebanonStack extends cdk.Stack {
       ),
       environment: {
         POSTS_TABLE: this.postsTable.tableName,
-        USER_POOL_ID: this.userPool.userPoolId
       },
     });
 
@@ -383,7 +382,7 @@ export class SoslebanonStack extends cdk.Stack {
   }
 
   getLatestPostsFunction(latestPostsApiResource: apigw.Resource) {
-    const getTypePosts = new lambda.Function(this, "get-latest-posts", {
+    const getLatestPosts = new lambda.Function(this, "get-latest-posts", {
       functionName: "get-latest-posts",
       runtime: lambda.Runtime.NODEJS_12_X,
       handler: "index.handler",
@@ -396,11 +395,19 @@ export class SoslebanonStack extends cdk.Stack {
       },
     });
 
-    this.postsTable.grantReadData(getTypePosts);
+    this.postsTable.grantReadData(getLatestPosts);
+
+    getLatestPosts.addToRolePolicy(
+      new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions:  ["lambda:InvokeFunction", "cognito-idp:*"],
+        resources: ["*"],
+      })
+    );
 
     latestPostsApiResource.addMethod(
       "GET",
-      defaults.lambdaIntegration(getTypePosts, {
+      defaults.lambdaIntegration(getLatestPosts, {
         "application/json": `
         #set($hasLastEvaluatedKey = $input.params('LastEvaluatedKey'))
         #set($hasLimit = $input.params('limit'))
